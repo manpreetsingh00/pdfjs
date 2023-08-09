@@ -446,9 +446,14 @@ const animationStarted = new Promise(function (resolve) {
   window.requestAnimationFrame(resolve);
 });
 
+ 
+
 // We need to delay opening until all HTML is loaded.
 animationStarted.then(function () {
+  //PDFViewerApplication.open(pdfAsArray);
   PDFViewerApplication.open({
     url: DEFAULT_URL,
   });
 });
+
+

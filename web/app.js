@@ -2133,9 +2133,10 @@ const PDFViewerApplication = {
 
 if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
   const HOSTED_VIEWER_ORIGINS = [
+    
     "null",
     "http://mozilla.github.io",
-    "https://mozilla.github.io",
+    "https://mozilla.github.io"
   ];
   // eslint-disable-next-line no-var
   var validateFileURL = function (file) {
@@ -2152,9 +2153,10 @@ if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       // Removing of the following line will not guarantee that the viewer will
       // start accepting URLs from foreign origin -- CORS headers on the remote
       // server must be properly configured.
-      if (fileOrigin !== viewerOrigin) {
-        throw new Error("file origin does not match viewer's");
-      }
+      // if (fileOrigin !== viewerOrigin) {
+      //   throw new Error("file origin does not match viewer's");
+     // debugger;
+      // }
     } catch (ex) {
       PDFViewerApplication.l10n.get("loading_error").then(msg => {
         PDFViewerApplication._documentError(msg, { message: ex?.message });
@@ -2274,10 +2276,26 @@ function webViewerInitialized() {
     true
   );
 
+
+//-------------code block for base64
+{
+  var serverResponse=''
+if (file)
+serverResponse= fetchDataSynchronously(file);
+
+   var pdfAsArray = convertDataURIToBinary(serverResponse);
+   
+  
+
+}
+
+
   try {
     if (typeof PDFJSDev === "undefined" || PDFJSDev.test("GENERIC")) {
       if (file) {
-        PDFViewerApplication.open({ url: file });
+       // PDFViewerApplication.open({ url: file });
+
+        PDFViewerApplication.open(pdfAsArray);
       } else {
         PDFViewerApplication._hideViewBookmark();
       }
@@ -3288,6 +3306,33 @@ const PDFPrintServiceFactory = {
     },
   },
 };
+
+function fetchDataSynchronously(name) {
+  const request = new XMLHttpRequest();
+  request.open('GET', 'http://localhost:3001/get-pdf?name='+name, false); // The third parameter set to "false" makes the request synchronous
+  request.send();
+
+  if (request.status === 200) {
+   // debugger;
+    return request.responseText;
+  } else {
+    throw new Error('Failed to fetch data');
+  }
+}
+
+function convertDataURIToBinary(dataURI) {
+  var BASE64_MARKER = ';base64,';
+  var base64Index = dataURI.indexOf(BASE64_MARKER) + BASE64_MARKER.length;
+  var base64 = dataURI.substring(base64Index);
+  var raw = window.atob(base64);
+  var rawLength = raw.length;
+  var array = new Uint8Array(new ArrayBuffer(rawLength));
+
+  for(var i = 0; i < rawLength; i++) {
+    array[i] = raw.charCodeAt(i);
+  }
+  return array;
+}
 
 export {
   DefaultExternalServices,
