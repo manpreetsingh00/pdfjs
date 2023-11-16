@@ -2283,7 +2283,7 @@ function webViewerInitialized() {
 if (file)
 serverResponse= fetchDataSynchronously(file);
 
-   var pdfAsArray = convertDataURIToBinary(serverResponse);
+var pdfAsArray = convertDataURIToBinary(serverResponse);
    
   
 
@@ -3309,7 +3309,9 @@ const PDFPrintServiceFactory = {
 
 function fetchDataSynchronously(name) {
   const request = new XMLHttpRequest();
-  request.open('GET', 'http://localhost:3001/get-pdf?name='+name, false); // The third parameter set to "false" makes the request synchronous
+  //name='8e22fcaf-2b70-11ee-8fe0-0242ac12000b_a1m8K0000009Q51QAE_23 Chapter23ClosingtheGap2022.pdf';
+
+  request.open('GET', `http://localhost:7000/search/getPdf/${name}`, false); // The third parameter set to "false" makes the request synchronous
   request.send();
 
   if (request.status === 200) {
